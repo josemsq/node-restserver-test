@@ -42,8 +42,31 @@ let verificaAdmin_Role = (req, res, next) => {
     }
 };
 
+//===================================
+//verificacion del token para Imagen
+//===================================
+// next : continua la ejecucion del programa
+let verificaTokenImg = (req, res, next) => {
+
+    let token = req.query.token; //lo que se define en la url ? token=sdad
+
+    jwt.verify(token, process.env.SEED, (err, decoded) => {
+
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err: { err, message: 'Token no valido' }
+            });
+        }
+
+        req.usuario = decoded.usuario;
+        next();
+    });
+};
+
 
 module.exports = {
     verificaToken,
-    verificaAdmin_Role
+    verificaAdmin_Role,
+    verificaTokenImg
 }
